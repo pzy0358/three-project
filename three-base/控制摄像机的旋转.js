@@ -117,9 +117,10 @@ createControls()
 // 坐标轴方法
 createHelper()
 
-// 调用循环渲染中更新方法 
-renderLoop()
+
 
 // 调用适配方法
 renderResize()
 
+// 调用循环渲染中更新方法 
+renderLoop()
