@@ -1,4 +1,4 @@
-// 全景立方体
+// 线--区别
 
 
 import './style.css'
@@ -91,43 +91,6 @@ const points = []
   // 添加到场景
   scene.add(line);
 }
-
-
-// 球形缓冲几何体并且全景贴图
-function createMap(){
-  const geometry = new THREE.SphereGeometry(2, 32, 16);
-  // const material = new THREE.MeshBasicMaterial({color: 0xffff00})
-// 创建文理加载器
-  const texture = new THREE.TextureLoader().load('image/earth/earth.jpg');
-  const material = new THREE.MeshBasicMaterial({
-    map: texture
-  })
-  const sphere = new THREE.Mesh(geometry, material);
-  scene.add(sphere);
-}
-
-// 创建立方缓冲体并进行贴图
-function createCubeAndImage(){
-  const geometry = new THREE.BoxGeometry(1,1,1);
-// 图片路径
-  const imgUrlArr = ['6.jpg','6.jpg', '6.jpg', '6.jpg', '6.jpg', '6.jpg']
-
-  // 设置公共路径
-  const textureLoader = new THREE.TextureLoader();//初始化文理加载器
-  textureLoader.setPath('image/park/'); //设置公共资源路径
-  const materialArr = imgUrlArr.map(item=>{
-    const texture = textureLoader.load(item)
-    texture.colorSpace = THREE.SRGBColorSpace;
-    return new THREE.MeshBasicMaterial({
-      map: texture,
-      side: THREE.DoubleSide,
-    })
-  })
-
-  const cube = new THREE.Mesh(geometry, materialArr);
-  scene.add(cube)
-}
-
 
 // 创建立方体
 function createCube() {
@@ -267,12 +230,7 @@ createGroup()
 
 // createSphere()
 
-// createLine()
-
-// createMap()
-
-createCubeAndImage()
-
+createLine()
 
 // 调用轨道控制器方法
 createControl()

@@ -1,4 +1,4 @@
-// 全景立方体
+// 全景贴图
 
 
 import './style.css'
@@ -104,28 +104,6 @@ function createMap(){
   })
   const sphere = new THREE.Mesh(geometry, material);
   scene.add(sphere);
-}
-
-// 创建立方缓冲体并进行贴图
-function createCubeAndImage(){
-  const geometry = new THREE.BoxGeometry(1,1,1);
-// 图片路径
-  const imgUrlArr = ['6.jpg','6.jpg', '6.jpg', '6.jpg', '6.jpg', '6.jpg']
-
-  // 设置公共路径
-  const textureLoader = new THREE.TextureLoader();//初始化文理加载器
-  textureLoader.setPath('image/park/'); //设置公共资源路径
-  const materialArr = imgUrlArr.map(item=>{
-    const texture = textureLoader.load(item)
-    texture.colorSpace = THREE.SRGBColorSpace;
-    return new THREE.MeshBasicMaterial({
-      map: texture,
-      side: THREE.DoubleSide,
-    })
-  })
-
-  const cube = new THREE.Mesh(geometry, materialArr);
-  scene.add(cube)
 }
 
 
@@ -269,10 +247,7 @@ createGroup()
 
 // createLine()
 
-// createMap()
-
-createCubeAndImage()
-
+createMap()
 
 // 调用轨道控制器方法
 createControl()

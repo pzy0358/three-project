@@ -1,4 +1,4 @@
-// 全景立方体
+// 线物体
 
 
 import './style.css'
@@ -69,65 +69,17 @@ function createSphere(){
 }
 
 
-// 球形缓冲几合体(线材质)(连续的线)
+// 球形缓冲几合体(线材质)
 function createLine(){
-
-
-const points = []
-  points.push(new THREE.Vector3(-10, 0, 0));
-  points.push(new THREE.Vector3(0, 10, 0));
-  points.push(new THREE.Vector3(10, 0, 0));
-  points.push(new THREE.Vector3(2, 2, 2));
-
-  const geometry = new THREE.BufferGeometry().setFromPoints(points);
-  // 创建材质
-  const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
-  // 创建网格
-  // const sphere = new THREE.Line(geometry, material);
-  
-  // const line = new THREE.Line(geometry, material);
-  // const line = new THREE.LineLoop(geometry, material);
-  const line = new THREE.LineSegments(geometry, material);
-  // 添加到场景
-  scene.add(line);
-}
-
-
-// 球形缓冲几何体并且全景贴图
-function createMap(){
   const geometry = new THREE.SphereGeometry(2, 32, 16);
-  // const material = new THREE.MeshBasicMaterial({color: 0xffff00})
-// 创建文理加载器
-  const texture = new THREE.TextureLoader().load('image/earth/earth.jpg');
-  const material = new THREE.MeshBasicMaterial({
-    map: texture
-  })
-  const sphere = new THREE.Mesh(geometry, material);
+  // 创建材质
+  const material = new THREE.LineBasicMaterial({ color: 0xff0000,size:0.05});
+  // 创建网格
+  const sphere = new THREE.Line(geometry, material);
+  sphere.position.set(3,3,3)
+  // 添加到场景
   scene.add(sphere);
 }
-
-// 创建立方缓冲体并进行贴图
-function createCubeAndImage(){
-  const geometry = new THREE.BoxGeometry(1,1,1);
-// 图片路径
-  const imgUrlArr = ['6.jpg','6.jpg', '6.jpg', '6.jpg', '6.jpg', '6.jpg']
-
-  // 设置公共路径
-  const textureLoader = new THREE.TextureLoader();//初始化文理加载器
-  textureLoader.setPath('image/park/'); //设置公共资源路径
-  const materialArr = imgUrlArr.map(item=>{
-    const texture = textureLoader.load(item)
-    texture.colorSpace = THREE.SRGBColorSpace;
-    return new THREE.MeshBasicMaterial({
-      map: texture,
-      side: THREE.DoubleSide,
-    })
-  })
-
-  const cube = new THREE.Mesh(geometry, materialArr);
-  scene.add(cube)
-}
-
 
 // 创建立方体
 function createCube() {
@@ -261,18 +213,13 @@ init()
 createGroup()
 
 // 调用 创建物体方法
-// createCube()
+createCube()
 
-// createCircle()
+createCircle()
 
-// createSphere()
+createSphere()
 
-// createLine()
-
-// createMap()
-
-createCubeAndImage()
-
+createLine()
 
 // 调用轨道控制器方法
 createControl()

@@ -1,4 +1,4 @@
-// 全景立方体
+// 物体分组
 
 
 import './style.css'
@@ -41,92 +41,6 @@ function createGroup(){
   group=new THREE.Group()
 }
 
-// 圆形缓冲几何体
-function createCircle(){
-  const geometry = new THREE.CircleGeometry(1, 32);
-  // 创建材质
-  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 ,side:THREE.DoubleSide});
-  // 创建网格
-  const circle = new THREE.Mesh(geometry, material);
-  
-  circle.position.set(10,10,10)
-  
-  // 添加到场景
-  scene.add(circle);
-}
-
-
-// 球形缓冲几合体(点材质)
-function createSphere(){
-  const geometry = new THREE.SphereGeometry(2, 32, 16);
-  // 创建材质
-  const material = new THREE.PointsMaterial({ color: 0xff0000,size:0.05});
-  // 创建网格
-  const sphere = new THREE.Points(geometry, material);
-  sphere.position.set(3,3,3)
-  // 添加到场景
-  scene.add(sphere);
-}
-
-
-// 球形缓冲几合体(线材质)(连续的线)
-function createLine(){
-
-
-const points = []
-  points.push(new THREE.Vector3(-10, 0, 0));
-  points.push(new THREE.Vector3(0, 10, 0));
-  points.push(new THREE.Vector3(10, 0, 0));
-  points.push(new THREE.Vector3(2, 2, 2));
-
-  const geometry = new THREE.BufferGeometry().setFromPoints(points);
-  // 创建材质
-  const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
-  // 创建网格
-  // const sphere = new THREE.Line(geometry, material);
-  
-  // const line = new THREE.Line(geometry, material);
-  // const line = new THREE.LineLoop(geometry, material);
-  const line = new THREE.LineSegments(geometry, material);
-  // 添加到场景
-  scene.add(line);
-}
-
-
-// 球形缓冲几何体并且全景贴图
-function createMap(){
-  const geometry = new THREE.SphereGeometry(2, 32, 16);
-  // const material = new THREE.MeshBasicMaterial({color: 0xffff00})
-// 创建文理加载器
-  const texture = new THREE.TextureLoader().load('image/earth/earth.jpg');
-  const material = new THREE.MeshBasicMaterial({
-    map: texture
-  })
-  const sphere = new THREE.Mesh(geometry, material);
-  scene.add(sphere);
-}
-
-// 创建立方缓冲体并进行贴图
-function createCubeAndImage(){
-  const geometry = new THREE.BoxGeometry(1,1,1);
-// 图片路径
-  const imgUrlArr = ['6.jpg','6.jpg', '6.jpg', '6.jpg', '6.jpg', '6.jpg']
-
-  // 设置公共路径
-  const textureLoader = new THREE.TextureLoader();//初始化文理加载器
-  textureLoader.setPath('image/park/'); //设置公共资源路径
-  const materialArr = imgUrlArr.map(item=>{
-    const texture = textureLoader.load(item)
-    texture.colorSpace = THREE.SRGBColorSpace;
-    return new THREE.MeshBasicMaterial({
-      map: texture,
-      side: THREE.DoubleSide,
-    })
-  })
-
-  const cube = new THREE.Mesh(geometry, materialArr);
-  scene.add(cube)
-}
 
 
 // 创建立方体
@@ -136,7 +50,7 @@ function createCube() {
 
 //  let random = Math.floor(Math.random()*(255-0+1)+0)
 
-  for(let i = 0; i < 1; i++){
+  for(let i = 0; i < 5; i++){
     const obj = {
       color:`rgb(${Math.floor(Math.random()*(255-0+1)+0)},${Math.floor(Math.random()*(255-0+1)+1)},${Math.floor(Math.random()*(255-0+1)+1)},${Math.floor(Math.random()*(255-0+1)+2)})`,
       w:Math.floor(Math.random()*(3-1+1)+1),
@@ -151,8 +65,8 @@ function createCube() {
 
   cubeInfoArr.map(item=>{
     const geometry = new THREE.BoxGeometry(item.w, item.h, item.d);
-    const material = new THREE.PointsMaterial({ color: item.color,size:0.5 });
-    const cube = new THREE.Points(geometry, material);
+    const material = new THREE.MeshBasicMaterial({ color: item.color });
+    const cube = new THREE.Mesh(geometry, material);
     cube.position.set(item.x, item.y, item.z)
 
 
@@ -261,19 +175,7 @@ init()
 createGroup()
 
 // 调用 创建物体方法
-// createCube()
-
-// createCircle()
-
-// createSphere()
-
-// createLine()
-
-// createMap()
-
-createCubeAndImage()
-
-
+createCube()
 // 调用轨道控制器方法
 createControl()
 // 调用坐标轴
