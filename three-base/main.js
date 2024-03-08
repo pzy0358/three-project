@@ -1,5 +1,5 @@
-// 全景立方体
-
+// 添加事件
+// 实现3d物体添加单机事件
 
 import './style.css'
 // 引入three.js
@@ -7,7 +7,8 @@ import * as THREE from 'three'
 
 // 轨道控制器
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
+// 引入3d转换器与渲染器
+import { CSS3DObject,CSS3DRenderer } from 'three/addons/renderers/CSS3DRenderer.js';
 //引入性能监视器的stats组件
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 
@@ -19,6 +20,7 @@ let cube
 let controls
 let stats
 let group
+let labelRenderer
 
 function init(){
   scene = new THREE.Scene()
@@ -128,6 +130,107 @@ function createCubeAndImage(){
   scene.add(cube)
 }
 
+// 创建平面缓冲物体将视频进行加载(视频纹理)
+function createPlaneMap(){
+  const geometry = new THREE.PlaneGeometry(6,3);
+// 创建视频标签
+  const video = document.createElement('video');
+  // 视频资源路径
+  // video.src = 'video/video.mp4';
+  video.src = 'video/video2.mp4';
+  // 设置视频默认静音
+  video.muted = true;
+  // 加载完毕进行播放
+  video.addEventListener('loadeddata',()=>{
+    video.play();
+  })
+  // 创建视频纹理加载器
+  const texture = new THREE.VideoTexture(video);
+  const material = new THREE.MeshBasicMaterial({
+    map: texture
+  })
+  const plane = new THREE.Mesh(geometry, material);
+  scene.add(plane);
+
+  // 点击按钮进行播放
+  const button = document.createElement('button');
+  button.innerHTML='play'
+  button.style.position = 'fixed';
+  button.style.bottom = '0';
+  button.style.left = '0';
+  document.body.appendChild(button);
+  button.addEventListener('click',()=>{
+    video.muted = !video.muted;
+  })
+}
+
+// 将原生dom转换并渲染到3d场景
+function domTo3D(){
+  // dom标签内容样式
+  const tag = document.createElement('span');
+  tag.innerHTML='啦啦啦啦'
+  tag.style.color = 'pink';
+  // 2d转3d
+  const tag3D = new CSS3DObject(tag);
+  tag3D.scale.set(1/16,1/16,1/16);
+  scene.add(tag3D);
+
+  // 通过渲染器渲染到浏览器
+  labelRenderer = new CSS3DRenderer();
+  labelRenderer.setSize(window.innerWidth, window.innerHeight);
+  labelRenderer.domElement.style.pointerEvents = 'none';
+  labelRenderer.domElement.style.position = 'fixed';
+  labelRenderer.domElement.style.left = '0';
+  labelRenderer.domElement.style.top = '0';
+  document.body.appendChild(labelRenderer.domElement);
+
+}
+
+
+// 创建原生dom标签
+function domTo3DCopy(){
+  const tag = document.createElement('div')
+  tag.innerHTML = '前进' 
+  tag.className = 'custom-text'
+  tag.style.color='pink'
+  tag.style.cursor='pointer'
+
+  tag.addEventListener('click',()=>{
+    alert('前进')
+  })
+
+  // 将2d转为3d
+  const tag3D = new CSS3DObject(tag);
+  tag3D.scale.set(1/40,1/40,1/40);
+  scene.add(tag3D);
+  // 将3d文本场景渲染到浏览器
+  labelRenderer = new CSS3DRenderer();
+  labelRenderer.setSize(window.innerWidth, window.innerHeight);
+  labelRenderer.domElement.style.pointerEvents = 'none';
+  labelRenderer.domElement.style.position = 'fixed';
+  labelRenderer.domElement.style.left = '0';
+  labelRenderer.domElement.style.top = '0';
+  document.body.appendChild(labelRenderer.domElement);
+}
+
+// 实现3d物体添加点击事件
+function bindClick(){
+  // 先给window绑定点击事件
+  window.addEventListener('click',()=>{
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+
+    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(pointer, camera);
+    const list = raycaster.intersectObjects(scene.children, true);
+    console.log(list);
+    const e = list.find(item=>item.object.name==='cn') 
+    console.log(e);
+    if(e) alert('点击了立方体')
+  })
+}
 
 // 创建立方体
 function createCube() {
@@ -152,7 +255,7 @@ function createCube() {
   cubeInfoArr.map(item=>{
     const geometry = new THREE.BoxGeometry(item.w, item.h, item.d);
     const material = new THREE.PointsMaterial({ color: item.color,size:0.5 });
-    const cube = new THREE.Points(geometry, material);
+    const cube = new THREE.Mesh(geometry, material);
     cube.position.set(item.x, item.y, item.z)
 
 
@@ -189,13 +292,15 @@ function createControl(){
 
 // 创建循环渲染
 function renderLoop() {
-  renderer.render(scene,camera );
- 
-  // 更新
+  requestAnimationFrame(renderLoop);
+ // 更新
 	controls.update();
   // 更新fps
   stats.update()
-  requestAnimationFrame(renderLoop);
+  renderer.render(scene,camera );
+  
+  // 渲染到文本画布上
+  labelRenderer.render(scene,camera );
 
 	
 }
@@ -261,7 +366,7 @@ init()
 createGroup()
 
 // 调用 创建物体方法
-// createCube()
+createCube()
 
 // createCircle()
 
@@ -271,7 +376,15 @@ createGroup()
 
 // createMap()
 
-createCubeAndImage()
+// createCubeAndImage()
+
+// createPlaneMap()
+
+// domTo3D()
+
+domTo3DCopy()
+// 3d物体点击事件方法
+bindClick()
 
 
 // 调用轨道控制器方法
